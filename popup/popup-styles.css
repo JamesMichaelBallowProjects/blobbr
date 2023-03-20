@@ -1,0 +1,22 @@
+body {
+    background-color: bisque;
+}
+#input_text_blob {
+    width: 90%;
+    height: 200px;
+    padding-top: 0;
+    padding-left: 0;
+    line-height: 1em;
+    text-align: start;
+}
+
+.blobber_button {
+    background-color: red;
+    width: 75px;
+    padding: 20px;
+    text-align: center;
+    font-size: large;
+    cursor: pointer;
+    border-radius: 5px;
+    display: inline-block;
+}
