@@ -7,22 +7,38 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="./popup-styles.css">
-
-
-
+        <link rel="stylesheet" href="./popup-allblobs-styles.css">
     </head>
     <body>
-        <h1>All Blobs</h1>
+        <div class="logo-brand">
+            <img src="../images/blobbr-logo-icon48.png" class="logo" alt=""> <span class="brand">Blobbr</span>
+        </div>
+
+        <h1>All The Blobs That You Blobbed</h1>
 
         <div id="all_blobs_div">
             <ol id="all_blobs_list">
-                <li>FIRST BLOB</li>
-                <li>SECOND BLOB</li>
-                <li>THIRD BLOB</li>
+                <li>
+                    <input type="checkbox" id="0" name="0">
+                    <label for="0"> FIRST BLOB</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="0" name="1">
+                    <label for="1"> SECOND BLOB</label>
+                </li>
+                <li>
+                    <input type="checkbox" id="0" name="$2">
+                    <label for="2"> THIRD BLOB</label>
+                </li>
             </ol>
         </div>
 
-        <div id="copy_all_blobs_button" class="blobber_button">Copy to Clipboard</div>
+        <div id="button_box">
+            <div id="copy_all_blobs_button" class="blobber_button allblobs_button">📋 Copy to Clipboard</div>
+            <div id="clear_blobs_button" class="blobber_button allblobs_button">⎚ Clear All Blobs</div>
+            <div id="clear_selected_button" class="blobber_button allblobs_button">⎚ Clear Selected Blobs</div>
+        </div>
+
 
         <script src="./popup-allblobs-script.js"></script>
 

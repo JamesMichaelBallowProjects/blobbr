@@ -1,0 +1,16 @@
+body {
+    height: 100%;
+    width:  100vw;
+
+}
+
+.allblobs_button {
+    max-width: 300px;
+}
+
+#button_box {
+    align-items: center;
+    display: block;
+}
+
+
