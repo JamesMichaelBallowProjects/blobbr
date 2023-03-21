@@ -29,8 +29,8 @@ function append_blob_to_list(idx, blob_text) {
         <label for="${idx}"> ${blob_text}</label>
         `
 
-    blob_item.id = idx
-    blob_item.name = idx
+    blob_item.id = "li" + idx
+    blob_item.name = "li" + idx
     blob_item.innerHTML = blob_with_checbox
     blob_list.appendChild(blob_item)
 }
@@ -75,7 +75,7 @@ clear_blobs_button.addEventListener("click", () => {
         }, (res) => {
             if (res.message === "success") {
                 console.log("successfully cleared blobs")
-                window.location.reload();
+                init();
             }
         });
         return true;
@@ -88,26 +88,44 @@ clear_selected_button.addEventListener("click", () => {
         let nBlobs = blob_list.innerText.split("\n").length
         var blobsToClear_Idx = []
 
-        for (let idx = 0; idx < nBlobs; idx++) {
-            const elementHTML = document.getElementById(`${idx}`);
+        if (nBlobs !== null) {
+            for (let idx = 1; idx <= nBlobs; idx++) {
+                const elementHTML = document.getElementById(`${idx}`);
+                console.log("ELEMENT:")
+                console.log(elementHTML)
+                console.log(`CHECKED ?= ${elementHTML.checked}`)
+                if ((elementHTML !== null) && (elementHTML.checked === true)) {
+                    blobsToClear_Idx.push(`${idx}`)
+                    console.log(`Pushed: ${idx} to list`)
+                }
+            };
 
-            if (elementHTML.checked === true) {
-                blobsToClear_Idx.push(idx+1)
-            }
+            console.log("GOING TO CLEAR THESE IDX:")
+            console.log(blobsToClear_Idx)
+            if (blobsToClear_Idx.length !== 0) {
+                chrome.runtime.sendMessage({
+                    message: "clear_selected_blobs",
+                    payload: blobsToClear_Idx
+                }, (res) => {
+                    if (res.message === "success") {
+                        console.log("successfully cleared selected blobs")
+                        init();
+                    }
+                });
+                return true;
+            };
         };
-
-        chrome.runtime.sendMessage({
-            message: "clear_selected_blobs",
-            payload: blobsToClear_Idx
-        }, (res) => {
-            if (res.message === "success") {
-                console.log("successfully cleared selected blobs")
-                init();
-            }
-        });
-        return true;
     };
 })
+
+chrome.runtime.onMessage.addListener((req, sender, sendRes) => {
+    if (req.message == "update_blob_list") {
+        init();
+        sendRes({
+            message: "success"
+        });
+    };
+});
 
 
 init();

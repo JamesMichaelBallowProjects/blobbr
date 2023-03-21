@@ -67,27 +67,43 @@ chrome.runtime.onMessage.addListener((req, sender, sendRes) => {
             console.error(`Could NOT init storage. ERROR: ${err}`);
         });
     } else if (req.message === "clear_selected_blobs") {
-        // chrome.storage.local.get(["blobSet"])
-        //     .then((r_blobSet) => {
-        //         sendRes({
-        //             message: "Sending you all blobs",
-        //             payload: r_blobSet.blobSet
-        //     })
-        // });
+        console.log(`I GOT THE MESSAGE FROM ${sender} to clear: ${req.paylaod}`)
+        chrome.storage.local.get(["blobSet"])
+            .then((r_blobSet) => {
+                const curBlobSet = r_blobSet.blobSet
+                const blobsToClear_Idx = req.payload
+                var curNBlobs = 0
+                var newBlobSet = {}
 
+                console.log(`CONFIRMING I SHOULD ERASE: ${blobsToClear_Idx}`)
+                for (let key in curBlobSet) {
+                    console.log(`key inside curBlobSet: ${key}`)
+                    console.log(key)
+                    console.log(`blobsToClear_Idx.includes(key) === false ?= ${blobsToClear_Idx.includes(key) === false}`)
+                    console.log(blobsToClear_Idx)
+                    if (blobsToClear_Idx.includes(key) === false) {
+                        newBlobSet[key] = curBlobSet[key]
+                        curNBlobs += 1
+                    }
+                 }
+                console.log("OLD SET")
+                console.log(curBlobSet)
+                console.log("NEW SET")
+                console.log(newBlobSet)
 
-        // chrome.storage.local.set({ "blobSet" : {}})
-        // .then(() => {
-        //     chrome.storage.local.set({ "nBlobs" : 0})
-        //         .then(() => {
-        //             sendRes({
-        //                 message: "success"
-        //             });
-        //         });
-        // })
-        // .catch((err) => {
-        //     console.error(`Could NOT init storage. ERROR: ${err}`);
-        // });
+                chrome.storage.local.set({ "blobSet" : newBlobSet})
+                .then(() => {
+                    chrome.storage.local.set({ "nBlobs" : curNBlobs})
+                        .then(() => {
+                            sendRes({
+                                message: "success"
+                            })
+                        });
+                })
+                .catch((err) => {
+                    console.error("Could NOT init storage.");
+                });
+            });
     } else if (req.message === "get_all_blobs") {
         chrome.storage.local.get(["blobSet"])
             .then((r_blobSet) => {
@@ -109,14 +125,18 @@ chrome.runtime.onMessage.addListener((req, sender, sendRes) => {
                             .then(() => {
                                 chrome.storage.local.set({ "nBlobs" : currNBlob})
                                     .then(() => {
-                                        console.log("THIS IS WHAT IS INSIDE THE STORAGE:")
-                                        chrome.storage.local.get(["blobSet"])
-                                        .then((newBlobSet) => {
-                                            console.log(newBlobSet)
-                                            sendRes({
-                                                message: "success"
-                                            })
-                                        });
+                                        sendRes({
+                                            message: "success"
+                                        })
+                                    })
+                                    .then(() => {
+                                        chrome.runtime.sendMessage({
+                                            message: "update_blob_list"
+                                        })
+                                        .catch(() => {
+                                            console.log("Attempted to update blob list: no blob list page exists.")
+                                        })
+                                        return true;
                                     });
                             })
                             .catch((err) => {
