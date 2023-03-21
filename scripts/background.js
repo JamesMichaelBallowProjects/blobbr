@@ -44,8 +44,8 @@ chrome.runtime.onMessage.addListener((req, _, sendRes) => {
                 // create new storage with those not to be cleared
                 for (let key in curBlobSet) {
                     if (idxOfBlobsToClear.includes(key) === false) {
-                        newBlobSet[key] = curBlobSet[key];
                         newNBlobs += 1;
+                        newBlobSet[newNBlobs] = curBlobSet[key];
                     };
                 };
 
