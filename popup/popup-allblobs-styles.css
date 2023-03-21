@@ -1,16 +1,17 @@
+/* elemental class definitions */
 body {
     height: 100%;
     width:  100vw;
-
 }
 
+/* unique class definitions */
 .allblobs_button {
     max-width: 300px;
 }
 
+/* id definitions */
 #button_box {
-    align-items: center;
     display: block;
+
+    align-items: center;
 }
-
-

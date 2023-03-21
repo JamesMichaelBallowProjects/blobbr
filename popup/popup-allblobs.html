@@ -2,45 +2,45 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title></title>
-        <meta name="description" content="">
+        <title>All Your Blobs</title>
+        
+        <meta name="description" content="Chrome Extension Summary Page for Blobbr">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        
         <link rel="stylesheet" href="./popup-styles.css">
         <link rel="stylesheet" href="./popup-allblobs-styles.css">
     </head>
     <body>
         <div class="logo-brand">
-            <img src="../images/blobbr-logo-icon48.png" class="logo" alt=""> <span class="brand">Blobbr</span>
+            <img src="../images/blobbr-logo-icon48.png" class="logo"> <span class="brand">Blobbr</span>
         </div>
 
         <h1>All The Blobs That You Blobbed</h1>
 
+        <!-- HTML snippet inside DIV for quick debug -->
         <div id="all_blobs_div">
             <ol id="all_blobs_list">
                 <li>
-                    <input type="checkbox" id="0" name="0">
-                    <label for="0"> FIRST BLOB</label>
+                    <input type="checkbox" id="1" name="1">
+                    <label for="1"> FIRST BLOB</label>
                 </li>
                 <li>
-                    <input type="checkbox" id="0" name="1">
-                    <label for="1"> SECOND BLOB</label>
+                    <input type="checkbox" id="2" name="2">
+                    <label for="2"> SECOND BLOB</label>
                 </li>
                 <li>
-                    <input type="checkbox" id="0" name="$2">
-                    <label for="2"> THIRD BLOB</label>
+                    <input type="checkbox" id="3" name="$3">
+                    <label for="3"> THIRD BLOB</label>
                 </li>
             </ol>
         </div>
 
         <div id="button_box">
-            <div id="copy_all_blobs_button" class="blobber_button allblobs_button">📋 Copy to Clipboard</div>
-            <div id="clear_blobs_button" class="blobber_button allblobs_button">⎚ Clear All Blobs</div>
-            <div id="clear_selected_button" class="blobber_button allblobs_button">⎚ Clear Selected Blobs</div>
+            <div id="copy_all_blobs_button" class="blobber_button allblobs_button">📋 <span class="highlighted_word">Copy</span> to Clipboard</div>
+            <div id="clear_blobs_button" class="blobber_button allblobs_button">⎚ Clear <span class="highlighted_word">All</span> Blobs</div>
+            <div id="clear_selected_button" class="blobber_button allblobs_button">⎚ Clear <span class="highlighted_word">Selected</span> Blobs</div>
         </div>
 
-
         <script src="./popup-allblobs-script.js"></script>
-
     </body>
 </html>

@@ -13,7 +13,7 @@ function animate_copy_blobs_completion() {
     copy_blobs_button.style.transition = "1s";
     copy_blobs_button.style.background = "#630A10";
     setTimeout(() => {
-        copy_blobs_button.innerText = "📋 Copy to Clipboard";
+        copy_blobs_button.innerHTML = "📋 <span class='highlighted_word'>Copy</span> to Clipboard";
     }, 400);
 };
 
