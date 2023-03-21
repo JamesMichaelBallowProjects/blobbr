@@ -1,109 +1,135 @@
-function set_storage(nBlobs, blobSet) {
-    chrome.storage.local.set({ "blobSet" : blobSet})
+
+// installation listeners
+chrome.runtime.onInstalled.addListener(() => {
+    chrome.storage.local.set({ "blobSet": {} })
         .then(() => {
-            chrome.storage.local.set({ "nBlobs" : nBlobs})
-                .then(() => {
-                    console.log("THIS IS WHAT IS INSIDE THE STORAGE:")
-                    console.log(blobSet);
-                });
+            chrome.storage.local.set({ "nBlobs": 0 })
         })
         .catch((err) => {
-            console.error("Could NOT init storage.");
+            console.error(`${err}`)
         });
-}
+});
 
-
-function add_blob_to_storage(blobText) {
-    chrome.storage.local.get(["blobSet"])
-    .then((r_blobSet) => {
-        chrome.storage.local.get(["nBlobs"])
-            .then((r_nBlobs) => {
-                const currNBlob = r_nBlobs.nBlobs + 1;
-                const blobSet = r_blobSet.blobSet;
-                blobSet[currNBlob] = blobText;
-
-
-                chrome.storage.local.set({ "blobSet" : blobSet})
+// messaging listeners
+chrome.runtime.onMessage.addListener((req, _, sendRes) => {
+    if (req.message === "clear_all_blobs") {
+        chrome.storage.local.set({ "blobSet": {} })
+            .then(() => {
+                chrome.storage.local.set({ "nBlobs": 0 })
                     .then(() => {
-                        chrome.storage.local.set({ "nBlobs" : currNBlob})
+                        sendRes({
+                            message: "success"
+                        });
+                    })
+                    .catch((err) => {
+                        console.error(`${err}`);
+                        sendRes({
+                            message: "fail"
+                        });
+                    });
+            })
+            .catch((err) => {
+                console.error(`${err}`);
+            });
+
+    } else if (req.message === "clear_selected_blobs") {
+        chrome.storage.local.get(["blobSet"])
+            .then((blobSetObj) => {
+                // new/old storage values
+                var newNBlobs = 0;
+                var newBlobSet = {};
+                const curBlobSet = blobSetObj.blobSet;
+                const idxOfBlobsToClear = req.payload;
+
+                // create new storage with those not to be cleared
+                for (let key in curBlobSet) {
+                    if (idxOfBlobsToClear.includes(key) === false) {
+                        newBlobSet[key] = curBlobSet[key];
+                        newNBlobs += 1;
+                    };
+                };
+
+                // send new storage structure to storage
+                chrome.storage.local.set({ "blobSet": newBlobSet })
+                    .then(() => {
+                        chrome.storage.local.set({ "nBlobs": newNBlobs })
                             .then(() => {
-                                console.log("THIS IS WHAT IS INSIDE THE STORAGE:")
-                                chrome.storage.local.get(["blobSet"])
-                                .then((DDD) => {
-                                    console.log(DDD)
+                                sendRes({
+                                    message: "success"
+                                });
+                            })
+                            .catch((err) => {
+                                console.error(`${err}`);
+                                sendRes({
+                                    message: "fail"
                                 });
                             });
                     })
                     .catch((err) => {
-                        console.error("Could NOT init storage.");
+                        console.error(`${err}`);
                     });
-            })
-    })
-    .catch((err) => {
-        console.error("Cannot fetch 'nBlobs' from storage.")
-    });
+            });
 
-}
-
-
-
-function clear_blobs_from_storage() {
-    set_storage(0, { 0 : "EMPTY"});
-}
-
-
-chrome.runtime.onInstalled.addListener(function(details){
-    set_storage(0, { 0 : "EMPTY"});
-});
-
-chrome.runtime.onMessage.addListener((req, sender, sendRes) => {
-    if (req.message === "clear_all_blobs") {
-        clear_blobs_from_storage()
-        .then(() => {
-            sendRes({
-                message: "success"
-            })
-        });
     } else if (req.message === "get_all_blobs") {
         chrome.storage.local.get(["blobSet"])
-            .then((r_blobSet) => {
-            sendRes({
-                message: "I got your message",
-                payload: r_blobSet.blobSet
+            .then((blobSetObj) => {
+                sendRes({
+                    message: "success",
+                    payload: blobSetObj.blobSet
+                });
             })
-        });
+            .catch((err) => {
+                console.error(`${err}`);
+                sendRes({
+                    message: "fail",
+                    payload: null
+                });
+            });
+
     } else if (req.message === "add_blob") {
         chrome.storage.local.get(["blobSet"])
-            .then((r_blobSet) => {
+            .then((blobSetObj) => {
                 chrome.storage.local.get(["nBlobs"])
                     .then((r_nBlobs) => {
                         const currNBlob = r_nBlobs.nBlobs + 1;
-                        const blobSet = r_blobSet.blobSet;
+                        const blobSet = blobSetObj.blobSet;
                         blobSet[currNBlob] = req.payload;
 
-                        chrome.storage.local.set({ "blobSet" : blobSet})
+                        chrome.storage.local.set({ "blobSet": blobSet })
                             .then(() => {
-                                chrome.storage.local.set({ "nBlobs" : currNBlob})
+                                chrome.storage.local.set({ "nBlobs": currNBlob })
                                     .then(() => {
-                                        console.log("THIS IS WHAT IS INSIDE THE STORAGE:")
-                                        chrome.storage.local.get(["blobSet"])
-                                        .then((newBlobSet) => {
-                                            console.log(newBlobSet)
-                                            sendRes({
-                                                message: "success"
-                                            })
+                                        sendRes({
+                                            message: "success"
+                                        });
+                                    })
+                                    .then(() => {
+                                        chrome.runtime.sendMessage({
+                                            message: "update_blob_list"
+                                        })
+                                            .catch((err) => {
+                                                console.log(`Attempted to update blob list: no blob list page exists. ${err}`);
+                                            });
+                                        return true;
+                                    })
+                                    .catch((err) => {
+                                        console.error(`${err}`);
+                                        sendRes({
+                                            message: "fail"
                                         });
                                     });
                             })
                             .catch((err) => {
-                                console.error("Could NOT init storage.");
+                                console.error(`${err}`);
                             });
                     })
+                    .catch((err) => {
+                        console.error(`${err}`);
+                    });
             })
             .catch((err) => {
-                console.error("Cannot fetch 'nBlobs' from storage.")
+                console.error(`${err}`);
             });
     };
     return true;
 });
-

@@ -4,28 +4,36 @@
   "version": "1.0.0",
   "description": "Description Here",
   "icons": {
-    "16": "images/icon16.png",
-    "24": "images/icon24.png",
-    "32": "images/icon32.png",
-    "48": "images/icon48.png",
-    "128": "images/icon128.png"
+    "16": "images/blobbr-logo-icon16.png",
+    "24": "images/blobbr-logo-icon24.png",
+    "32": "images/blobbr-logo-icon32.png",
+    "48": "images/blobbr-logo-icon48.png",
+    "128": "images/blobbr-logo-icon128.png"
   },
   "background": {
     "service_worker": "./scripts/background.js"
   },
   "action": {
     "default_icon":{
-      "16": "images/icon16.png",
-      "24": "images/icon24.png",
-      "32": "images/icon32.png",
-      "48": "images/icon48.png",
-      "128": "images/icon128.png"
+      "16": "images/blobbr-logo-icon16.png",
+      "24": "images/blobbr-logo-icon24.png",
+      "32": "images/blobbr-logo-icon32.png",
+      "48": "images/blobbr-logo-icon48.png",
+      "128": "images/blobbr-logo-icon128.png"
     },
-    "default_title": "blobbr title here",
+    "default_title": "Blobbr",
     "default_popup": "./popup/popup.html"
   },
   "permissions": [
     "storage"
-  ]
+  ],
+  "commands": {
+      "_execute_action": {
+          "suggested_key": {
+              "default": "Ctrl+Shift+Q",
+              "mac": "MacCtrl+Command+Q"
+          }
+      }
+  }
 
 }
